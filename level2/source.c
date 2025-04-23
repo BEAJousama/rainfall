@@ -3,7 +3,8 @@
 #include <unistd.h>
 #include <string.h>
 
-char* p() {
+char* p()
+{
     char input[80]; // buffer on the stack
 
     fflush(stdout); // flush output to make sure prompt shows
@@ -23,6 +24,7 @@ char* p() {
     exit(1); // immediate exit, doesn't return
 }
 
-int main(int argc, char** argv, char** envp) {
+int main(int argc, char** argv, char** envp) 
+{
     return (int)p(); // call function p and return its result (casted to int)
 }
