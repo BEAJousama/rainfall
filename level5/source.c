@@ -14,7 +14,7 @@ void n()
 
     fgets(buffer, sizeof(buffer), stdin);
 
-    printf("%s", buffer);
+    printf(buffer);
 
     exit(1);
 }
