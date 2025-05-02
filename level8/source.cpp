@@ -10,7 +10,9 @@ int main()
 {
     // Read user input into buf
     if (!fgets(buf, sizeof(buf), stdin))
-        return 1;
+    {
+        return (1);
+    }
 
     // If the command starts with "auth "
     if (strncmp(buf, "auth ", 5) == 0)
