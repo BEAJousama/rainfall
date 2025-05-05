@@ -26,7 +26,7 @@ int main()
     }
 
     // If the command is "reset"
-    if (strncmp(buf, "reset", 5) == 0)
+    if (strncmp(buf, "reset", 5) == 0)malloc
     {
         free(auth);
         auth = nullptr;
