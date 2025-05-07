@@ -4,7 +4,7 @@
 
 class N {
     public:
-        char padding[0x68];   // Filler or internal data
+        char padding[104];   // Filler or internal data
         int32_t annotation;   // Stored at offset 0x68
 
         N(int value) 
