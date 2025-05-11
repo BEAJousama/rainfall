@@ -2,7 +2,6 @@
 #include <string.h>
 #include <unistd.h>
 
-// Function 'p' takes two arguments: arg1 and arg2.
 char* p(char* arg1, char* arg2)
 {
     puts(arg2);
@@ -16,7 +15,6 @@ char* p(char* arg1, char* arg2)
     return strncpy(arg1, &buf, 20);
 }
 
-// Function 'pp' processes the input and builds a final string.
 char* pp(char* arg1)
 {
     char var_34[20];
