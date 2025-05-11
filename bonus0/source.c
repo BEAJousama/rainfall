@@ -10,7 +10,7 @@ char* p(char* arg1, char* arg2)
 
     read(0, &buf, 4096);
 
-    *strchr(&buf, 0xa) = 0;
+    *strchr(&buf, 10) = 0;
 
     return strncpy(arg1, &buf, 20);
 }
@@ -26,7 +26,7 @@ char* pp(char* arg1)
 
     strcpy(arg1, &var_34);
 
-    int i = 0xFFFFFFFF;
+    int i = 4294967295U;
 
     char* edi = arg1;
     while (i != 0)
@@ -43,7 +43,7 @@ char* pp(char* arg1)
         }
     }
 
-    *(edi - 1) = 0x20;
+    *(edi - 1) = 32;
 
     return strcat(arg1, &var_20);
 }
