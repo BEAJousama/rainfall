@@ -18,7 +18,7 @@ char* p(char* arg1, char* arg2)
 char* pp(char* arg1)
 {
     char var_34[20];
-    char var_20[20];
+    char var_20[28];
 
     p(&var_34, " - ");
 
