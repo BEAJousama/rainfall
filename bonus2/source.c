@@ -4,15 +4,21 @@
 
 int language = 0;  // Global language flag: 0 = English, 1 = Finnish, 2 = Dutch
 
-int greet_user(const char* name) {
+int greet_user(const char* name) 
+{
     char greeting[100] = {0};
 
-    if (language == 1) {
+    if (language == 1) 
+    {
         // "Hyvää päivää " in UTF-8 encoded as raw bytes
         memcpy(greeting, "\x48\x79\x76\xc3\xa4\xc3\xa4\x20\x70\xc3\xa4\x69\x76\xc3\xa4\xc3\xa4\x20", 0x12);
-    } else if (language == 2) {
+    } 
+    else if (language == 2) 
+    {
         strcpy(greeting, "Goedemiddag! ");
-    } else {
+    } 
+    else 
+    {
         strncpy(greeting, "Hello ", 7);
     }
 
@@ -23,8 +29,10 @@ int greet_user(const char* name) {
     return puts(greeting);
 }
 
-int main(int argc, char** argv) {
-    if (argc != 3) {
+int main(int argc, char** argv) 
+{
+    if (argc != 3) 
+    {
         return 1;
     }
 
@@ -38,10 +46,14 @@ int main(int argc, char** argv) {
 
     // Detect language from environment
     const char* lang_env = getenv("LANG");
-    if (lang_env != NULL) {
-        if (memcmp(lang_env, "fi", 2) == 0) {
+    if (lang_env != NULL) 
+    {
+        if (memcmp(lang_env, "fi", 2) == 0) 
+        {
             language = 1;  // Finnish
-        } else if (memcmp(lang_env, "nl", 2) == 0) {
+        } 
+        else if (memcmp(lang_env, "nl", 2) == 0) 
+        {
             language = 2;  // Dutch
         }
         // Default is English (language = 0)
