@@ -36,13 +36,13 @@ int main(int argc, char** argv)
         return 1;
     }
 
-    char buffer_name[0x4c] = {0};  // 76 bytes
-    char name[0x21] = {0};         // 33 bytes
+    char buffer_name[76] = {0};  // 76 bytes
+    char name[33] = {0};         // 33 bytes
 
     // Copy first argument into buffer_name safely (max 40 chars)
-    strncpy(buffer_name, argv[1], 0x28);  // 40 bytes
+    strncpy(buffer_name, argv[1], 40);  // 40 bytes
     // Copy second argument into name safely (max 32 chars)
-    strncpy(name, argv[2], 0x20);         // 32 bytes
+    strncpy(name, argv[2], 32);         // 32 bytes
 
     // Detect language from environment
     const char* lang_env = getenv("LANG");
