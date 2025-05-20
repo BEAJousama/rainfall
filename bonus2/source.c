@@ -10,8 +10,7 @@ int greet_user(const char* name)
 
     if (language == 1) 
     {
-        // "Hyvää päivää " in UTF-8 encoded as raw bytes
-        memcpy(greeting, "\x48\x79\x76\xc3\xa4\xc3\xa4\x20\x70\xc3\xa4\x69\x76\xc3\xa4\xc3\xa4\x20", 0x12);
+        memcpy(greeting, "Hyvää päivää ", 18);
     } 
     else if (language == 2) 
     {
