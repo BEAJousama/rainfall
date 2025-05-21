@@ -2,7 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-int language = 0;  // Global language flag: 0 = English, 1 = Finnish, 2 = Dutch
+int language = 0;
 
 int greet_user(const char* name) 
 {
@@ -10,7 +10,7 @@ int greet_user(const char* name)
 
     if (language == 1) 
     {
-        memcpy(greeting, "Hyvää päivää ", 18);
+        memcpy(greeting, "Hyvää päivää", 18);
     } 
     else if (language == 2) 
     {
@@ -35,29 +35,25 @@ int main(int argc, char** argv)
         return 1;
     }
 
-    char buffer_name[76] = {0};  // 76 bytes
-    char name[33] = {0};         // 33 bytes
+    char buffer_name[76] = {0};
+    char name[33] = {0};
 
-    // Copy first argument into buffer_name safely (max 40 chars)
-    strncpy(buffer_name, argv[1], 40);  // 40 bytes
-    // Copy second argument into name safely (max 32 chars)
-    strncpy(name, argv[2], 32);         // 32 bytes
+    strncpy(buffer_name, argv[1], 40);
 
-    // Detect language from environment
+    strncpy(name, argv[2], 32);
+
     const char* lang_env = getenv("LANG");
     if (lang_env != NULL) 
     {
         if (memcmp(lang_env, "fi", 2) == 0) 
         {
-            language = 1;  // Finnish
+            language = 1;
         } 
         else if (memcmp(lang_env, "nl", 2) == 0) 
         {
-            language = 2;  // Dutch
+            language = 2;
         }
-        // Default is English (language = 0)
     }
 
-    // Pass the name to greet_user
     return greet_user(name);
 }
