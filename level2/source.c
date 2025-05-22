@@ -5,26 +5,23 @@
 
 char* p()
 {
-    char input[80]; // buffer on the stack
+    char input[80];
 
-    fflush(stdout); // flush output to make sure prompt shows
-    gets(input);    // unsafe function, vulnerable to buffer overflow!
+    fflush(stdout);
+    gets(input);
 
-    // Check if the return address is in user space
     void* return_address = builtin_return_address(0);
     if (((unsigned long)return_address & 0xB0000000) != 0xB0000000) 
     {
-        // If return address is safe, print input and return a copy of it
         puts(input);
-        return strdup(input); // duplicate the input string
+        return strdup(input);
     }
 
-    // Otherwise, print the suspicious return address and exit
     printf("(%p)\n", return_address);
-    exit(1); // immediate exit, doesn't return
+    exit(1);
 }
 
 int main(int argc, char** argv, char** envp) 
 {
-    return (int)p(); // call function p and return its result (casted to int)
+    return (int)p();
 }

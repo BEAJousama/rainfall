@@ -21,6 +21,8 @@ int main(int argc, char* argv[])
 }
 ```
 
+So if argv[1] is "423", we get a shell:
+
 ```
     level0@RainFall:~$ ./level0 423
     $ cat /home/user/level1/.pass    
