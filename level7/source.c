@@ -21,13 +21,10 @@ int main(int argc, char** argv, char** envp)
     second[0] = 2;
     second[1] = (int)malloc(8);
 
-    // Copy argv[1] into memory pointed to by first[1]
     strcpy((char*)first[1], argv[1]);
 
-    // Copy argv[2] into memory pointed to by second[1]
     strcpy((char*)second[1], argv[2]);
 
-    // Read a string from the secret file into 'c'
     FILE* secret = fopen("/home/user/level8/.pass", "r");
     if (secret != NULL) 
     {
