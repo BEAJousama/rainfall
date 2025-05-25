@@ -85,8 +85,8 @@ Payload:
 
 ```
     payload = 4 bytes of shellcode address (0x0804a010)
-            + shellcode (23 bytes)
-            + padding of 108 bytes
+            + shellcode (28 bytes)
+            + padding of 76 bytes
             + return address (0x0804a00c)
 ```
 
