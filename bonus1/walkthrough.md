@@ -1,3 +1,37 @@
+
+```
+    int main(int argc, char** argv, char** envp) 
+    {
+        int input_length = atoi(argv[1]);
+
+        if (input_length > 9)
+        {
+            return 1;
+        }
+
+        char buffer[40];
+
+        memcpy(buffer, argv[2], input_length * 4);
+
+        if (input_length == 0x574F4C46)
+        {
+            execl("/bin/sh", "sh", NULL);
+        }
+
+        return 0;
+    }
+```
+- The atoi(argv[1]) converts a string to an int.
+
+- The input_length should be <= 9, or it exits.
+
+- If input_length is negative, input_length * 4 results in a large unsigned value.
+
+- This causes memcpy() to copy much more than 40 bytes, leading to a buffer overflow.
+
+- The buffer[40] is a stack variable, so overflowing it can overwrite input_length and we can put FLOW in input_length and spawn a shell.
+
+
 In C, atoi() returns a signed int. Signed integers go from:
 
 INT_MIN = -2147483648 to INT_MAX = 2147483647

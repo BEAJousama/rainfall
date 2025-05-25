@@ -3,7 +3,8 @@
 #include <string.h>
 #include <unistd.h>
 
-int main(int argc, char** argv, char** envp) {
+int main(int argc, char** argv, char** envp) 
+{
     int input_length = atoi(argv[1]);
 
     if (input_length > 9)
