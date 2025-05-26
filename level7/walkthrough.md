@@ -1,5 +1,5 @@
 ```
-        char c[68];
+    char c[68];
 
     int m()
     {
@@ -82,7 +82,7 @@ The address of function m()
     0x080486bc  _fini
 ```
 
-the address of function m() is 0x080484f4 in little-indian \xf4\x84\x04\x08
+the address of function m() is 0x080484f4 in little-indian "\xf4\x84\x04\x08"
 
 
 ```
@@ -106,7 +106,7 @@ The Got entry of puts
     08049928 R_386_JUMP_SLOT   puts
 ```
 
-the address of puts() is 0x08049928 in little-indian \x28\x99\x04\x08
+the address of puts() is 0x08049928 in little-indian "\x28\x99\x04\x08"
 
 8 (buffer) + 4 (second[0]) + 4 (second[1]) = 16 bytes => To write exactly into second[1], we need to send 20 bytes:
 

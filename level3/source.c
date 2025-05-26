@@ -13,7 +13,7 @@ int v()
     printf(buffer);
 
     int m_1 = m;
-    if (m_1 != 64)
+    if (m_1 != 60)
     {
         return m_1;
     }

