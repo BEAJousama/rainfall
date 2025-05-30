@@ -11,7 +11,7 @@
         printf(buffer);
 
         int m_1 = m;
-        if (m_1 != 64)
+        if (m_1 != 60)
         {
             return m_1;
         }
@@ -27,11 +27,11 @@
     }
 ```
 
-We have a global variable m is initialized to 0 if m == 64, the v() function prints “Wait what?!” and spawns a shell.
+We have a global variable m is initialized to 0 if m == 60, the v() function prints “Wait what?!” and spawns a shell.
 
-Since m is a global, not a stack variable, we need to find its memory address and then include that in our input to overwrite it to 64.
+Since m is a global, not a stack variable, we need to find its memory address and then include that in our input to overwrite it to 60.
 
-and we have printf(buffer); a format string vulnerability to overwrite the global variable m with 64
+and we have printf(buffer); a format string vulnerability to overwrite the global variable m with 60
 
 Lets find the adress of m 
 
@@ -79,7 +79,7 @@ the argument is 4
     �                                                           
     Wait what?!
     cat /home/user/level4/.pass
-    b209ea91ad69ef36f2cf0fcbbc24c739fd10464cf545b20bea8572ebdc3c36fa
+    b209ea91ad69ef36f2cf0fcbbc24c739fd10460cf545b20bea8572ebdc3c36fa
 ```
 
 
