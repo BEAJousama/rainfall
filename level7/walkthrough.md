@@ -1,3 +1,25 @@
+
+We get in the level7, then we list the files in the home directory:
+
+```
+    level7@RainFall:~$ ls -la
+    -rwsr-s---+ 1 level8 users  5648 Mar  9  2016 level7
+```
+The binary is owned by level8 and has the SUID bit set, meaning if it executes any shell, it will run with level8's privileges.
+
+We try to execute the binary file to get an idea of what it does exactly
+```
+    level7@RainFall:~$ ./level7 
+    Segmentation fault (core dumped)
+    level7@RainFall:~$ ./level7 dfsd
+    Segmentation fault (core dumped)
+    level7@RainFall:~$ ./level7 dfsd sdas
+    ~~
+    level7@RainFall:~$
+```
+
+We decompile the binary to get the source code:
+
 ```
     char c[68];
 
