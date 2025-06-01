@@ -134,3 +134,13 @@ the address of puts() is 0x08049928 in little-indian "\x28\x99\x04\x08"
     5684af5cb4c8679958be4abe6373147ab52d95768e047820bf382e44fa8d8fb9
     - 1746024775
 ```
+
+We jump to next level:
+
+```
+    level7@RainFall:~$ su level8 
+    Password:5684af5cb4c8679958be4abe6373147ab52d95768e047820bf382e44fa8d8fb9
+    RELRO           STACK CANARY      NX            PIE             RPATH      RUNPATH      FILE
+    No RELRO        No canary found   NX disabled   No PIE          No RPATH   No RUNPATH   /home/user/level8/level8
+    level8@RainFall:~$ 
+```

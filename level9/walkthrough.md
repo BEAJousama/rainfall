@@ -1,4 +1,12 @@
-Source Code Summary:
+We get in the level9, then we list the files in the home directory:
+
+```
+    level9@RainFall:~$ ls -la
+    -rwsr-s---+ 1 bonus0 users  6720 Mar  6  2016 level9
+```
+The binary is owned by bonus0 and has the SUID bit set, meaning if it executes any shell, it will run with bonus0's privileges.
+
+We try to execute the binary file to get an idea of what it does exactly:
 
 ```
     class N
