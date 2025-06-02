@@ -1,7 +1,7 @@
 First of all we connect to the machine via ssh as described bellow
 
 ```
-    export RINFALL_IP=10.11.100.172
+    export RINFALL_IP=10.13.100.203
 
     ssh level0@${RINFALL_IP} -p 4242
     password: level0
